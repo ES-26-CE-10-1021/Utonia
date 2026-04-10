@@ -115,19 +115,16 @@ if __name__ == "__main__":
     # inverse back to original scale before grid sampling
     # point.inverse is acquired from the GirdSampling transform
     original_pca_color = pca_color[point.inverse]
+    # Export original (RGB) point cloud
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(original_coord)
+    pcd.colors = o3d.utility.Vector3dVector(original_color)
+    o3d.io.write_point_cloud("pc.ply", pcd)
+    print("Wrote pc.ply")
+
+    # Export PCA-colored point cloud
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(original_coord)
     pcd.colors = o3d.utility.Vector3dVector(original_pca_color.cpu().detach().numpy())
-    o3d.visualization.draw_geometries([pcd])
-    # or
-    # o3d.visualization.draw_plotly([pcd])
-
-    # # Export PCA
-    # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(original_coord)
-    # pcd.colors = o3d.utility.Vector3dVector(original_color)
-    # o3d.io.write_point_cloud("pc.ply", pcd)
-    # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(original_coord)
-    # pcd.colors = o3d.utility.Vector3dVector(original_pca_color.cpu().detach().numpy())
-    # o3d.io.write_point_cloud("pca.ply", pcd)
+    o3d.io.write_point_cloud("pca.ply", pcd)
+    print("Wrote pca.ply")
