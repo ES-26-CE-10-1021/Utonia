@@ -110,19 +110,13 @@ if __name__ == "__main__":
     # inverse back to original scale before grid sampling
     # point.inverse is acquired from the GirdSampling transform
     original_pca_color = pca_color[point.inverse]
+    from pathlib import Path
+    save_dir = Path(__file__).parent / "exports"
+    save_dir.mkdir(exist_ok=True)
+    out_path = save_dir / f"{Path(__file__).stem}.ply"
+
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(original_coord)
     pcd.colors = o3d.utility.Vector3dVector(original_pca_color.cpu().detach().numpy())
-    o3d.visualization.draw_geometries([pcd])
-    # or
-    # o3d.visualization.draw_plotly([pcd])
-
-    # # Export pca
-    # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(original_coord)
-    # pcd.colors = o3d.utility.Vector3dVector(original_color)
-    # o3d.io.write_point_cloud("pc.ply", pcd)
-    # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(original_coord)
-    # pcd.colors = o3d.utility.Vector3dVector(original_pca_color.cpu().detach().numpy())
-    # o3d.io.write_point_cloud("pca.ply", pcd)
+    o3d.io.write_point_cloud(out_path, pcd)
+    print(f"Wrote {out_path.name}")

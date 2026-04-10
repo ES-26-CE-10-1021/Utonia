@@ -96,9 +96,13 @@ if __name__ == "__main__":
         batched_coord = point.coord.clone()
         batched_coord[:, 0] += point.batch * 8.0
 
+    from pathlib import Path
+    save_dir = Path(__file__).parent / "exports"
+    save_dir.mkdir(exist_ok=True)
+    out_path = save_dir / f"{Path(__file__).stem}.ply"
+
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(batched_coord.cpu().detach().numpy())
     pcd.colors = o3d.utility.Vector3dVector(pca_color.cpu().detach().numpy())
-    o3d.visualization.draw_geometries([pcd])
-
-    # o3d.io.write_point_cloud("batch.ply", pcd)
+    o3d.io.write_point_cloud(out_path, pcd)
+    print(f"Wrote {out_path.name}")

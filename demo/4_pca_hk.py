@@ -109,19 +109,13 @@ if __name__ == "__main__":
         # PCA
         pca_color = get_pca_color(point.feat, brightness=1.2, center=True)
 
+    from pathlib import Path
+    save_dir = Path(__file__).parent / "exports"
+    save_dir.mkdir(exist_ok=True)
+    out_path = save_dir / f"{Path(__file__).stem}.ply"
+
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(point.coord.cpu().detach().numpy())
     pcd.colors = o3d.utility.Vector3dVector(pca_color.cpu().detach().numpy())
-    o3d.visualization.draw_geometries([pcd])
-    # or
-    # o3d.visualization.draw_plotly([pcd])
-
-    # # Export PCA
-    # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(point.coord.cpu().detach().numpy())
-    # pcd.colors = o3d.utility.Vector3dVector(point.color.cpu().detach().numpy())
-    # o3d.io.write_point_cloud("pc.ply", pcd)
-    # pcd = o3d.geometry.PointCloud()
-    # pcd.points = o3d.utility.Vector3dVector(point.coord.cpu().detach().numpy())
-    # pcd.colors = o3d.utility.Vector3dVector(pca_color.cpu().detach().numpy())
-    # o3d.io.write_point_cloud("pca.ply", pcd)
+    o3d.io.write_point_cloud(out_path, pcd)
+    print(f"Wrote {out_path.name}")

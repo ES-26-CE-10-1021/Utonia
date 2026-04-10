@@ -214,7 +214,15 @@ if __name__ == "__main__":
                 verbose=False,
             )
         )
-        o3d.visualization.draw_geometries(pcds)
-        # o3d.io.write_point_cloud("similarity_global.ply", pcds[0])
-        # o3d.io.write_point_cloud("similarity_local.ply", pcds[1])
-        # o3d.io.write_line_set("similarity_line.ply", pcds[2])
+        # Export each geometry separately so future demo runs don't overwrite.
+        from pathlib import Path
+        save_dir = Path(__file__).parent / "exports"
+        save_dir.mkdir(exist_ok=True)
+        stem = Path(__file__).stem
+        global_path = save_dir / f"{stem}_global.ply"
+        local_path = save_dir / f"{stem}_local.ply"
+        line_path = save_dir / f"{stem}_line.ply"
+        o3d.io.write_point_cloud(global_path, pcds[0])
+        o3d.io.write_point_cloud(local_path, pcds[1])
+        o3d.io.write_line_set(line_path, pcds[2])
+        print(f"Wrote {global_path.name}, {local_path.name}, {line_path.name}")
