@@ -15,3 +15,8 @@ outputs/
 */.DS_Store
 **/*.out
 Dockerfile
+demo/exports/
+
+# pixi environments
+.pixi/*
+!.pixi/config.toml
